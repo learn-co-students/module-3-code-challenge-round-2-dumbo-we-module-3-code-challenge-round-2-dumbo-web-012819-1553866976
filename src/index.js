@@ -26,10 +26,21 @@ function createShowingCard(showing) {
         </div>
       </div>
       <div class="extra content">
-        <div class="ui blue button">Buy Ticket</div>
+
+        <div class="ui blue button">${blueButtonChanger(showing)}</div>
       </div>
     </div>
   `
+};
+
+function blueButtonChanger(showing) {
+  const ticketsRemaining = showing.capacity - showing.tickets_sold
+  if (ticketsRemaining > 0) {
+    return "Buy Ticket"
+  } else {
+    return "SOLD OUT"
+    blueButton.className = "SOLD OUT"
+  }
 };
 
 function purchaseTicket(id) {
