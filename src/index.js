@@ -1,13 +1,12 @@
 // VARIABLES:
 const theatreId = 11;
-const theatresUrl = "https://evening-plateau-54365.herokuapp.com/theatres/11";
+const theatresUrl = `https://evening-plateau-54365.herokuapp.com/theatres/${theatreId}`;
 const ticketUrl = "https://evening-plateau-54365.herokuapp.com/tickets"
 const showingsDiv = document.querySelector('.showings')
 //-----
 
 // FUNCTIONS:
 function createShowingCard(showing) {
-  // debugger
   return `
     <div class="card" data-showing-id="${showing.id}">
       <div class="content">
@@ -47,23 +46,36 @@ function purchaseTicket(id) {
   return fetch(ticketUrl, fetchObj)
   .then(resp => resp.json())
 };
+
+function updateRemainingTickets(ticket) {
+  let showingId = ticket.showing_id
+  let currentShowing = document.querySelector(`[data-showing-id="${showingId}"]`)
+  let ticketsOnDom = currentShowing.querySelector('.tickets-remaining')
+  let decreasedTickets = parseInt(ticketsOnDom.innerText) - 1
+  ticketsOnDom.innerText = `${decreasedTickets} remaining tickets`
+};
 //-----
 
 // EVENT LISTENERS:
 showingsDiv.addEventListener('click', e => {
   const blueButton = e.target
   if (blueButton.className === "ui blue button") {
-    const ticketId = blueButton.parentElement.parentElement.dataset.showingId
-    purchaseTicket(ticketId)
-    .then(ticket => {
-      if (!!ticket) {
-        let showingId = ticket.showing_id
-        let currentShowing = document.querySelector(`[data-showing-id="${showingId}"]`)
-        let ticketsOnDom = currentShowing.querySelector('.tickets-remaining')
-        let currentTickets = parseInt(ticketsOnDom.innerText) - 1
-        ticketsOnDom.innerText = `${currentTickets} remaining tickets`
-      }
-    })
+    const showingCard = blueButton.parentElement.parentElement
+    const ticketsLeft = parseInt(showingCard.querySelector('.tickets-remaining').innerText)
+    const ticketId = showingCard.dataset.showingId
+
+    if (ticketsLeft > 0) {
+      purchaseTicket(ticketId)
+      .then(ticket => {
+        if (!!ticket) {
+          updateRemainingTickets(ticket)
+        }
+      })
+    } else {
+      blueButton.innerText = "SOLD OUT"
+      blueButton.className = "SOLD OUT"
+      alert('no tickets left')
+    }
   }
 });
 //-----
