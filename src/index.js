@@ -74,7 +74,7 @@ showingsDiv.addEventListener('click', e => {
     } else {
       blueButton.innerText = "SOLD OUT"
       blueButton.className = "SOLD OUT"
-      alert('no tickets left')
+      alert('There are no tickets left for this showing. Try another time or or a different theatre -- or just wait for Netflix.')
     }
   }
 });
